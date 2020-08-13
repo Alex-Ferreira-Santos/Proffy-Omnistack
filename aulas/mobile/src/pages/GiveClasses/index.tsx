@@ -18,7 +18,7 @@ function GiveClasses(){
         source={giveClassesBgImage} 
         style={styles.content}>
             <Text style={styles.title}>Quer ser um Proffy</Text>
-            <Text style={styles.description}>Para começar,você precisa se cadastrar como professor na nossa plataforma web</Text>
+            <Text style={styles.description}>Para começar, você precisa se cadastrar como professor na nossa plataforma web</Text>
         </ImageBackground>
 
         <RectButton onPress={handleNavigateBack} style={styles.okButton}>
