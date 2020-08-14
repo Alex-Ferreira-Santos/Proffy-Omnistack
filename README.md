@@ -1,2 +1,2 @@
 # Proffy-Omnistack
- Porffy na rota Omnistack da NLW#2
+ Proffy na rota Omnistack da NLW#2
