@@ -6,6 +6,7 @@ import { RectButton } from 'react-native-gesture-handler'
 import heartOutlineIcon from '../../assets/images/icons/heart-outline.png'
 import unfavoriteIcon from '../../assets/images/icons/unfavorite.png'
 import whatsappIcon from '../../assets/images/icons/whatsapp.png'
+import api from '../../services/api'
 
 export interface Teacher{
     id:number 
@@ -26,33 +27,43 @@ const TeacherItem:React.FC<TeacherItemProps>=({teacher, favorited})=>{
     const [isFavorited, setIsFavorited] = useState(favorited)
 
     function handleLinkToWhatsapp(){
+        api.post('connections', {user_id: teacher.id})
         Linking.openURL(`whatsapp://send?phone=${teacher.whatsapp}`)
     }
 
     async function handleToggleFavorite(){
-        if(isFavorited){
-            
-        }else{
-            const favorites= await AsyncStorage.getItem('favorites')
+        const favorites= await AsyncStorage.getItem('favorites')
 
-            let favoritesArray= []
+        let favoritesArray= []
 
 
             if (favorites) {
                 favoritesArray = JSON.parse(favorites)
             }
-            
+
+        if(isFavorited){
+            const favoriteIndex = favoritesArray.findIndex((teacherItem: Teacher) => {
+                return teacherItem.id === teacher.id
+            })
+
+            favoritesArray.splice(favoriteIndex, 1)
+            setIsFavorited(false)
+         }else{
+ 
             favoritesArray.push(teacher)
 
             setIsFavorited(true)
-            await AsyncStorage.setItem('favorites',JSON.stringify(favoritesArray))
+            
         }
+        await AsyncStorage.setItem('favorites',JSON.stringify(favoritesArray))
     }
 
     return (
         <View style={styles.container}>
             <View style={styles.profile}>
-                <Image style={styles.avatar} source={{ uri: teacher.avatar }}/>
+                <Image 
+                style={styles.avatar} 
+                source={{ uri: teacher.avatar }}/>
 
                 <View style={styles.profileInfo}>
                     <Text style={styles.name}>{teacher.name}</Text>
@@ -71,6 +82,7 @@ const TeacherItem:React.FC<TeacherItemProps>=({teacher, favorited})=>{
 
                 <View style={styles.buttonsContainer}>
                     <RectButton 
+                    onPress={handleToggleFavorite}
                     style={[
                         styles.favoriteButton, 
                         styles.favorited,

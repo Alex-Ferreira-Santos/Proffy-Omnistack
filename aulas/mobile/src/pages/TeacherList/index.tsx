@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { Text,View,ScrollView,TextInput } from 'react-native'
 import styles from './styles'
 import PageHeader from '../../components/PageHeader'
@@ -8,15 +8,18 @@ import {Feather} from '@expo/vector-icons'
 import api from '../../services/api'
 import AsyncStorage from '@react-native-community/async-storage'
 
+
 function TeacherList(){
     const [favorites, setFavorites] = useState<number[]>([])
     const [isFiltersVisible, setIsFilterVisible]= useState(false)
+
     const [teachers, setTeachers]= useState([])
+
     const [subject, setSubject] = useState('')
-    const [week_day, setweekDay] = useState('')
+    const [week_day, setWeekDay] = useState('')
     const [time, setTime] = useState('')
 
-    useEffect(() => {
+    function loadFavorites(){
         AsyncStorage.getItem('favorites').then(response =>{
             if(response){
                 const favoritedTeachers = JSON.parse(response)
@@ -26,7 +29,7 @@ function TeacherList(){
                 setFavorites(favoritedTeachersIds)
             }
         })
-    }, [])
+    }
 
 
     function handleToggleFiltersVisible(){
@@ -34,15 +37,19 @@ function TeacherList(){
     }
 
     async function handleFiltersSubmit(){
-        const response = await api.get('classes',{
-            params:{
+        loadFavorites();
+        const response = await api.get('classes', {
+            params: {
                 subject,
                 week_day,
                 time,
             }
-        })
+        });
+
         setIsFilterVisible(false)
         setTeachers(response.data)
+        console.log(response.data)
+        
     }
 
     return(
@@ -72,7 +79,8 @@ function TeacherList(){
                             placeholder="Qual o dia?"
                             placeholderTextColor="#c1bccc"
                             value={week_day}
-                            onChangeText={text => setweekDay(text)}/>
+                            onChangeText={text => setWeekDay(text)}
+                            />
                         </View>
 
                         <View style={styles.inputBlock}>
@@ -96,8 +104,9 @@ function TeacherList(){
 
         <ScrollView style={styles.teacherList} contentContainerStyle={{
             paddingHorizontal:16,
-            paddingBottom:16
-        }}>
+            paddingBottom:16,
+        }}
+        >
             {teachers.map((teacher: Teacher) => { 
                 return( 
                 <TeacherItem 
