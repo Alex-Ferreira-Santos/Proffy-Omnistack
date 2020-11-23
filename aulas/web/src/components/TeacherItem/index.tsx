@@ -41,6 +41,7 @@ interface TeacherItemProps{
                         <strong>R${teacher.cost}</strong>
                     </p>
                     <a target="_blank"
+                    rel="noopener noreferrer"
                      onClick={createNewConnection}
                       href={`https://wa.me/${teacher.whatsapp}`}>
                         <img src={whatsappIcon} alt="Whatsapp"/>
